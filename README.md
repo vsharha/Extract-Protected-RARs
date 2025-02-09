@@ -1,5 +1,11 @@
 # Extract Protected RARs
 
+## Purpose
+
+This allows for mass extracting password-protected RARs. I decided to automate this because I found doing this by hand annoying.
+
+## Usage instructions
+
 This script is available as a Windows Batch file as well as a Powershell script.
 
 Pre-requisites:
