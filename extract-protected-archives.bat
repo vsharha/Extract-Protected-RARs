@@ -15,37 +15,37 @@ mkdir "extracted" 2>nul
 :: Function to log with timestamp
 call :LogMessage "Extraction process started by user: %USERNAME%"
 
-:: Check if rar_passwords.csv exists
-if not exist "rar_passwords.csv" (
-    echo Error: rar_passwords.csv not found!
-    call :LogMessage "Error: rar_passwords.csv not found!"
+:: Check if passwords.csv exists
+if not exist "passwords.csv" (
+    echo Error: passwords.csv not found!
+    call :LogMessage "Error: passwords.csv not found!"
     pause
     exit /b 1
 )
 
-:: Process each RAR file
-for %%R in (*.rar) do (
-    set "rar_name=%%~nR"
+:: Process each archive file (7z, rar, zip, etc.)
+for %%A in (*.7z *.rar *.zip *.tar *.gz *.bz2 *.xz) do (
+    set "archive_name=%%~nA"
     set "password="
     
-    :: Find password in CSV for current RAR
-    for /f "usebackq tokens=1,2 delims=," %%a in ("rar_passwords.csv") do (
-        if "%%a"=="!rar_name!" set "password=%%b"
+    :: Find password in CSV for current archive
+    for /f "usebackq tokens=1,2 delims=," %%a in ("passwords.csv") do (
+        if "%%a"=="!archive_name!" set "password=%%b"
     )
     
     if defined password (
-        echo Processing: %%R
-        mkdir "extracted\%%~nR" 2>nul
-        "%sevenzip%" x "%%R" -o"extracted\%%~nR" -p"!password!" -y
+        echo Processing: %%A
+        mkdir "extracted\%%~nA" 2>nul
+        "%sevenzip%" x "%%A" -o"extracted\%%~nA" -p"!password!" -y
         if !errorlevel! equ 0 (
-            echo Successfully extracted: %%R
+            echo Successfully extracted: %%A
         ) else (
-            echo Failed to extract: %%R
-            call :LogMessage "Failed to extract: %%R - Error level: !errorlevel!"
+            echo Failed to extract: %%A
+            call :LogMessage "Failed to extract: %%A - Error level: !errorlevel!"
         )
     ) else (
-        echo Warning: No password found for %%R
-        call :LogMessage "No password found for: %%R"
+        echo Warning: No password found for %%A
+        call :LogMessage "No password found for: %%A"
     )
 )
 
@@ -53,7 +53,7 @@ echo.
 echo Extraction complete!
 echo Check %logfile% for any failed extractions.
 echo All files have been extracted to the "extracted" folder
-echo Original RAR files have been preserved.
+echo Original archive files have been preserved.
 pause
 exit /b 0
 
