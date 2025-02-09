@@ -1,3 +1,5 @@
+# Extract Protected RARs
+
 This script is available as a Windows Batch file as well as a Powershell script.
 
 Pre-requisites:
